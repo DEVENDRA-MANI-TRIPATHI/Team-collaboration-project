@@ -12,10 +12,12 @@ app.use(cookieParser())
 
 import UserRouter from './routes/user.routes.js'
 import TaskRouter from './routes/task.routes.js'
+import CommentRouter from './routes/comment.routes.js'
  
 
-app.use("/api/v1/users", UserRouter);
+app.use("/api/v1/auth", UserRouter);
 app.use("/api/v1/task", TaskRouter);
+app.use("/api/v1/task", CommentRouter);
 
 
 
