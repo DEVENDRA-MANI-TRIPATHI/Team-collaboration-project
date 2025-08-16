@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
 
-const UserSchema = new Schema(
+const userSchema = new Schema(
   {
         username: {
           type: String,
@@ -69,7 +69,10 @@ userSchema.methods.generateRefreshToken = async function () {
             expiresIn:process.env.REFRESH_TOKEN_EXPIRY
         }
     )
- }
+}
 
+userSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password,this.password)
+}
 
-export default mongoose.model('User', UserSchema);
+export const User = mongoose.model('User', userSchema);
