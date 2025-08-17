@@ -3,26 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { Box, Paper, TextField, Button, Typography } from "@mui/material";
 import useAuth from "../hooks/useAuth";
 
-export default function Login() {
-  const { login } = useAuth();  // get login function from context
+export default function Signup() {
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await login({ email, password }); // call AuthContext login
-      navigate("/"); // redirect to dashboard after login
+      await signup({ username, email, password });
+      navigate("/");
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || "Login failed, try again.");
+      setError(err.response?.data?.message || "Signup failed, try again.");
     } finally {
       setLoading(false);
     }
@@ -43,14 +50,14 @@ export default function Login() {
         onSubmit={handleSubmit}
       >
         <Typography variant="h5" align="center" gutterBottom>
-          Welcome Back 👋
+          Create an Account ✨
         </Typography>
         <Typography
           variant="body2"
           align="center"
           sx={{ mb: 3, color: "text.secondary" }}
         >
-          Please login to continue
+          Please fill the form to continue
         </Typography>
 
         {error && (
@@ -59,6 +66,13 @@ export default function Login() {
           </Typography>
         )}
 
+        <TextField
+          fullWidth
+          label="Full Name"
+          margin="normal"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
         <TextField
           fullWidth
           label="Email"
@@ -75,6 +89,14 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <TextField
+          fullWidth
+          label="Confirm Password"
+          type="password"
+          margin="normal"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
         <Button
           fullWidth
@@ -83,7 +105,7 @@ export default function Login() {
           sx={{ mt: 2, mb: 1, p: 1.2 }}
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Signing up..." : "Sign Up"}
         </Button>
 
         <Typography
@@ -91,7 +113,7 @@ export default function Login() {
           align="center"
           sx={{ mt: 2, color: "text.secondary" }}
         >
-          Don’t have an account? <a href="/signup">Sign up</a>
+          Already have an account? <a href="/login">Login</a>
         </Typography>
       </Paper>
     </Box>
